@@ -23,5 +23,5 @@ The Vortex Indicator (VTX) can be used to identify the start of a trend and subs
     - times.txt (this values depends on timeframe choosen)
 
 # DATA ALIGNMENT
-    - In order for the kelner work for multi symbols at once, data points count for all symbols should match.
     
+    In order for the kelner work for multi symbols at once, data points count for all symbols should match.

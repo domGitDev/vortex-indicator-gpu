@@ -3,6 +3,7 @@ The Vortex Indicator (VTX) can be used to identify the start of a trend and subs
 # COMPILE AND RUN
 
 - Install Cuda ToolKit (cuda 9 and above)
+    - https://docs.nvidia.com/cuda/
 
 - Add cuda lib to PATH and LD_LIBRARY_PATH
     - eg LINUX: 

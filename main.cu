@@ -18,7 +18,7 @@
 using MinuteList = std::vector<MinuteData>;
 using SymbolMinuteListMap = std::map<std::string, MinuteList>;
 
-double *device_arr1;
+double *device_arr;
 double *device_outval;
 double *error_val;
 std::vector<std::string> dates;
@@ -131,8 +131,8 @@ void WriteOutputToFile(std::string symbol, size_t symbolIdx,
 
 void FreeCudaVariables()
 {
-    if(device_arr1)
-        cudaFree(device_arr1);
+    if(device_arr)
+        cudaFree(device_arr);
     if(device_outval)
         cudaFree(device_outval);
     if(error_val)
@@ -237,10 +237,10 @@ int main(int argc , char** argv)
     }
     
     // Allocate Unified Memory – accessible from CPU or GPU
-    cudaStatus = cudaMallocManaged(&device_arr1, arraySize * columns * sizeof(double));
+    cudaStatus = cudaMallocManaged(&device_arr, arraySize * columns * sizeof(double));
     if (cudaStatus != cudaSuccess) 
     {
-        std::cerr << "cudaMallocManaged device_arr1 " << cudaStatus << std::endl;
+        std::cerr << "cudaMallocManaged device_arr " << cudaStatus << std::endl;
         return 1;
     }  
 
@@ -277,9 +277,9 @@ int main(int argc , char** argv)
             int index = symbolOffset+i;
             int cIdx = (symbolOffset+i) * columns;
     
-            device_arr1[cIdx] = it.second[i].high;
-            device_arr1[cIdx+1] = it.second[i].low;
-            device_arr1[cIdx+2] = it.second[i].close;
+            device_arr[cIdx] = it.second[i].high;
+            device_arr[cIdx+1] = it.second[i].low;
+            device_arr[cIdx+2] = it.second[i].close;
 
             dates[index] = it.second[i].date;
             times[index] = it.second[i].time;
@@ -304,7 +304,7 @@ int main(int argc , char** argv)
 
     // call kernel
     VortexIndicator <<<numBlocks, numThreads>>> (
-        device_arr1, symbolsCount, arraySize, dataLength, 
+        device_arr, symbolsCount, arraySize, dataLength, 
         timesCount, columns, device_outval, winSize, error_val);
 
     // Wait for GPU to finish before accessing on host

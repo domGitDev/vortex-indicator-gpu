@@ -6,7 +6,7 @@
 
 
 __global__ void VortexIndicator(
-    double *device_arr1, int symbol_count, int indic_len, int dataLength,
+    double *device_arr, int symbol_count, int indic_len, int dataLength,
     int time_len, int columns, double *device_outval, int win_size, double *error_val)
 {
     int blockID = blockIdx.y*gridDim.x + blockIdx.x; /// find block Id in 2D grid of 1D blocks
@@ -25,8 +25,8 @@ __global__ void VortexIndicator(
         int outIdx = index * columns;
 
         // skip all error values and values less then average win size
-        if(device_arr1[cIdx] == *error_val || device_arr1[cIdx+1] == *error_val ||
-            device_arr1[cIdx+2] == *error_val ||(win_size == 0 && time_idx == 0))
+        if(device_arr[cIdx] == *error_val || device_arr[cIdx+1] == *error_val ||
+            device_arr[cIdx+2] == *error_val ||(win_size == 0 && time_idx == 0))
         {
             device_outval[outIdx] = *error_val;
             device_outval[outIdx+1] = *error_val;
@@ -44,22 +44,22 @@ __global__ void VortexIndicator(
             for(int i=index; i >= symbolOffset; i--)
             {
                 cIdx = i * columns;
-                if(device_arr1[cIdx] != *error_val &&
-                    device_arr1[cIdx+1] != *error_val &&
-                    device_arr1[cIdx+2] != *error_val)
+                if(device_arr[cIdx] != *error_val &&
+                    device_arr[cIdx+1] != *error_val &&
+                    device_arr[cIdx+2] != *error_val)
                 {
                     if(high != *error_val && low != *error_val)
                     {
-                        plusVM += abs(high - device_arr1[cIdx+1]); // current high - previous low
-                        minusVM += abs(low - device_arr1[cIdx]); // current low - previous high
+                        plusVM += abs(high - device_arr[cIdx+1]); // current high - previous low
+                        minusVM += abs(low - device_arr[cIdx]); // current low - previous high
 
-                        double val = max(high-low, abs(high-device_arr1[cIdx+2]));
-                        trueRange += max(val, abs(low-device_arr1[cIdx+2]));
+                        double val = max(high-low, abs(high-device_arr[cIdx+2]));
+                        trueRange += max(val, abs(low-device_arr[cIdx+2]));
                         count++;
                     }
 
-                    high = device_arr1[cIdx];
-                    low = device_arr1[cIdx+1];
+                    high = device_arr[cIdx];
+                    low = device_arr[cIdx+1];
 
                     if(count == win_size)
                         break;

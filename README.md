@@ -24,5 +24,10 @@ The Vortex Indicator (VTX) can be used to identify the start of a trend and subs
     - times.txt (this values depends on timeframe choosen)
 
 # DATA ALIGNMENT
-    
+    For each given symbol program reads its data from ./data folder
     In order for the kelner work for multi symbols at once, data points count for all symbols should match.
+
+# OUTPUT
+
+    - The program outputs to ./output folder indicators files per symbols
+    - Output data format [date, time, TR14, -VI14, +VI14]
